@@ -1,0 +1,106 @@
+---
+type Lane = {
+  id: string;
+  label: string;
+  description?: string;
+};
+
+type Props = {
+  lanes: Lane[];
+};
+
+const { lanes } = Astro.props;
+
+const chipClass =
+  "min-h-11 min-w-11 px-4 rounded-full border border-black/15 dark:border-white/25 " +
+  "text-sm text-black/60 dark:text-white/75 " +
+  "aria-pressed:bg-black aria-pressed:text-white aria-pressed:border-black " +
+  "dark:aria-pressed:bg-white dark:aria-pressed:text-black dark:aria-pressed:border-white " +
+  "hover:border-black/40 hover:dark:border-white/50 " +
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current " +
+  "motion-safe:transition-colors motion-safe:duration-300 motion-safe:ease-in-out";
+---
+
+<nav id="lane-filter" aria-label="Filter resume bullets by lane">
+  <div class="flex flex-wrap gap-2 items-center" role="group" aria-label="Lane filter">
+    <button type="button" data-lane="all" aria-pressed="true" class={chipClass}>
+      All
+    </button>
+    {
+      lanes.map((lane) => (
+        <button
+          type="button"
+          data-lane={lane.id}
+          aria-pressed="false"
+          title={lane.description}
+          class={chipClass}
+        >
+          {lane.label}
+        </button>
+      ))
+    }
+    <button
+      type="button"
+      id="depth-toggle"
+      aria-pressed="false"
+      class={chipClass + " ml-auto"}
+    >
+      Expand all
+    </button>
+  </div>
+  <p class="mt-2 text-xs" id="lane-filter-note">
+    Pick a lane to bring its strongest evidence forward — everything else stays
+    visible, just dimmed.
+  </p>
+</nav>
+
+<script>
+  function initLaneFilter() {
+    const bar = document.getElementById("lane-filter");
+    if (!bar || bar.dataset.wired === "true") return;
+    bar.dataset.wired = "true";
+
+    const chips = Array.from(
+      bar.querySelectorAll<HTMLButtonElement>("button[data-lane]"),
+    );
+    const bullets = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-lanes]"),
+    );
+    const laneIds = chips.map((c) => c.dataset.lane);
+
+    function apply(lane: string) {
+      for (const chip of chips) {
+        chip.setAttribute("aria-pressed", String(chip.dataset.lane === lane));
+      }
+      for (const bullet of bullets) {
+        const match =
+          lane === "all" ||
+          (bullet.dataset.lanes ?? "").split(" ").includes(lane);
+        bullet.classList.toggle("lane-dim", !match);
+      }
+    }
+
+    for (const chip of chips) {
+      chip.addEventListener("click", () => apply(chip.dataset.lane ?? "all"));
+    }
+
+    // Support pre-filtered links, e.g. /resume?lane=TPM
+    const requested = new URLSearchParams(window.location.search).get("lane");
+    apply(requested && laneIds.includes(requested) ? requested : "all");
+
+    // Global expand/collapse for bullets that carry expanded depth.
+    const toggle = document.getElementById("depth-toggle");
+    const details = Array.from(
+      document.querySelectorAll<HTMLDetailsElement>("details.depth"),
+    );
+    toggle?.addEventListener("click", () => {
+      const expand = toggle.getAttribute("aria-pressed") !== "true";
+      for (const d of details) d.open = expand;
+      toggle.setAttribute("aria-pressed", String(expand));
+      toggle.textContent = expand ? "Collapse all" : "Expand all";
+    });
+  }
+
+  document.addEventListener("astro:page-load", initLaneFilter);
+  document.addEventListener("DOMContentLoaded", initLaneFilter);
+</script>

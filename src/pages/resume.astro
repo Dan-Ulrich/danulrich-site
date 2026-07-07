@@ -1,0 +1,140 @@
+---
+import Container from "@components/Container.astro";
+import PageLayout from "@layouts/PageLayout.astro";
+import Link from "@components/Link.astro";
+import LaneFilter from "@components/LaneFilter.astro";
+import RoleBlock from "@components/RoleBlock.astro";
+import { RESUME } from "@consts";
+import resume from "../data/resume.json";
+
+const { header, lanes, roles, early_career } = resume;
+---
+
+<PageLayout title={RESUME.TITLE} description={RESUME.DESCRIPTION}>
+  <Container>
+    <div class="space-y-10">
+      <!-- Through-line header: fixed chrome, unaffected by lane filters -->
+      <header class="animate space-y-4" id="resume-header">
+        <div>
+          <h1 class="font-serif text-2xl font-semibold text-black dark:text-white">
+            {header.name}
+          </h1>
+          <p class="mt-1 text-sm">{header.tagline}</p>
+          <p class="mt-1 text-sm">
+            {header.location}
+            <span class="mx-1" aria-hidden="true">&middot;</span>
+            <Link href={header.contact.href} external>
+              {header.contact.label}
+            </Link>
+          </p>
+        </div>
+        {header.through_line.map((paragraph) => <p>{paragraph}</p>)}
+      </header>
+
+      <div class="animate print:hidden">
+        <LaneFilter lanes={lanes} />
+      </div>
+
+      <!-- Roles, reverse-chronological -->
+      <div class="animate space-y-10" id="resume-roles">
+        <h2 class="sr-only">Professional experience</h2>
+        {roles.map((role) => <RoleBlock role={role} />)}
+
+        <!-- Early Career Highlights: dateless by design -->
+        <section id="early-career" class="space-y-2">
+          <h3 class="font-serif font-semibold text-black dark:text-white">
+            {early_career.heading}
+          </h3>
+          <ul class="list-disc pl-5 space-y-2">
+            {early_career.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </section>
+      </div>
+
+      <div class="animate print:hidden">
+        {/* TODO: wire this to the real ATS PDF rendered by scripts/md-to-docx.ps1 (career-ops) once the download artifact exists. */}
+        <Link href="#">Download PDF</Link>
+        <span class="text-xs ml-2">(coming soon — the ATS-ready file)</span>
+      </div>
+    </div>
+  </Container>
+</PageLayout>
+
+<style is:global>
+  /* Lane filtering dims off-lane bullets — it never removes them.
+     Dimmed bullets stay in the accessibility tree (no aria-hidden). */
+  .lane-dim {
+    opacity: 0.35;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .lane-bullet {
+      transition: opacity 300ms ease-in-out;
+    }
+  }
+
+  /* Expandable depth: hide the native marker, show a "more/less" hint instead. */
+  details.depth > summary {
+    list-style: none;
+  }
+  details.depth > summary::-webkit-details-marker {
+    display: none;
+  }
+  details.depth > summary .depth-hint::before {
+    content: "— more";
+    opacity: 0.6;
+    margin-left: 0.375rem;
+  }
+  details.depth[open] > summary .depth-hint::before {
+    content: "— less";
+  }
+  details.depth > summary:hover .depth-hint::before {
+    opacity: 1;
+  }
+
+  /* Print: a clean, light, concise one-source resume. */
+  @media print {
+    body > header,
+    footer,
+    #lane-filter,
+    .print\:hidden {
+      display: none !important;
+    }
+    html {
+      color-scheme: light;
+    }
+    body,
+    main {
+      background: #fff !important;
+      padding: 0 !important;
+    }
+    #resume-header,
+    #resume-roles {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    #resume-header *,
+    #resume-roles * {
+      color: #000 !important;
+      background: transparent !important;
+    }
+    /* Print the concise view: collapse expanded depth, undo any dimming. */
+    details.depth > *:not(summary) {
+      display: none !important;
+    }
+    details.depth > summary .depth-hint::before {
+      content: "" !important;
+    }
+    .lane-dim {
+      opacity: 1 !important;
+    }
+    section {
+      break-inside: avoid-page;
+    }
+    a {
+      text-decoration: none !important;
+    }
+    @page {
+      margin: 1.6cm;
+    }
+  }
+</style>

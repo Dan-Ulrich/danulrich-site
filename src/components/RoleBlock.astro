@@ -1,0 +1,64 @@
+---
+type Bullet = {
+  id: string;
+  text_concise: string;
+  text_expanded?: string;
+  lanes: string[];
+  tags?: string[];
+};
+
+type Role = {
+  id: string;
+  employer: string;
+  title: string;
+  engagement?: string;
+  location?: string;
+  dates: string;
+  bullets: Bullet[];
+};
+
+type Props = {
+  role: Role;
+};
+
+const { role } = Astro.props;
+const metaLine = [role.engagement, role.location, role.dates]
+  .filter(Boolean)
+  .join(" | ");
+---
+
+<section id={role.id} class="space-y-2">
+  <div>
+    <h3 class="font-serif font-semibold text-black dark:text-white">
+      {role.title}
+    </h3>
+    <p class="text-sm">
+      {role.employer}
+      <span class="mx-1" aria-hidden="true">&middot;</span>
+      {metaLine}
+    </p>
+  </div>
+  <ul class="list-disc pl-5 space-y-2">
+    {
+      role.bullets.map((bullet) =>
+        bullet.text_expanded ? (
+          <li data-lanes={bullet.lanes.join(" ")} class="lane-bullet">
+            <details class="depth">
+              <summary class="cursor-pointer rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
+                {bullet.text_concise}
+                <span class="depth-hint text-sm whitespace-nowrap" aria-hidden="true" />
+              </summary>
+              <p class="depth-body mt-2 pl-3 border-l-2 border-black/10 dark:border-white/20 text-sm">
+                {bullet.text_expanded}
+              </p>
+            </details>
+          </li>
+        ) : (
+          <li data-lanes={bullet.lanes.join(" ")} class="lane-bullet">
+            {bullet.text_concise}
+          </li>
+        ),
+      )
+    }
+  </ul>
+</section>
