@@ -14,6 +14,12 @@ export const HOME: Metadata = {
     "Dan Ulrich — senior technical program manager and business analyst. Salt Lake City, UT | Remote – U.S.",
 };
 
+export const RESUME: Metadata = {
+  TITLE: "Resume",
+  DESCRIPTION:
+    "Dan Ulrich's interactive resume — filterable by lane: technical program management, program management, business analysis, and AI-enabled delivery.",
+};
+
 export const BLOG: Metadata = {
   TITLE: "Blog",
   DESCRIPTION: "Notes on program delivery, operations, and AI-enabled work.",
