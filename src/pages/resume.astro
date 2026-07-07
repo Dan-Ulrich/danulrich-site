@@ -52,9 +52,10 @@ const { header, lanes, roles, early_career } = resume;
       </div>
 
       <div class="animate print:hidden">
-        {/* TODO: wire this to the real ATS PDF rendered by scripts/md-to-docx.ps1 (career-ops) once the download artifact exists. */}
-        <Link href="#">Download PDF</Link>
-        <span class="text-xs ml-2">(coming soon — the ATS-ready file)</span>
+        {/* Web-safe PDF (contact = location + LinkedIn only; no phone/email on the public site).
+            Regenerate from career-ops profile/Daniel_Ulrich_Master_Resume.md via scripts/md-to-docx.ps1
+            with the {{PHONE}}/{{EMAIL}} tokens swapped out, then replace public/Dan-Ulrich-Resume.pdf. */}
+        <Link href="/Dan-Ulrich-Resume.pdf" external>Download PDF</Link>
       </div>
     </div>
   </Container>
