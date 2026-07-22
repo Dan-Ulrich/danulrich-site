@@ -1,0 +1,61 @@
+#!/bin/sh
+# Commit guard for danulrich-site (runs automatically on every `git commit`).
+#
+# WHY: this repo is public and powers danulrich.com. Dan's rule is "no raw
+# PII or secrets in any git repo" — this script enforces that by machine.
+# It scans exactly what is about to be committed (the staged copy, not the
+# working folder) and BLOCKS the commit if it finds:
+#   - secret-looking files (.env, .pem, .key)
+#   - API keys / tokens (AWS, GitHub, OpenAI/Anthropic, Slack, private keys)
+#   - phone numbers
+#   - personal email addresses (gmail/outlook/yahoo/icloud/hotmail/proton)
+#
+# False alarm? Fix the file, or in a genuine emergency bypass ONCE with:
+#   git commit --no-verify
+# (If you ever need --no-verify, tell Claude so the pattern can be tuned.)
+
+fail=0
+
+for f in $(git diff --cached --name-only --diff-filter=ACM); do
+  # binary/asset/lockfile types: skip content scan
+  case "$f" in
+    *.png|*.jpg|*.jpeg|*.webp|*.gif|*.ico|*.woff|*.woff2|*.ttf|*.pdf|*.svg|package-lock.json|pnpm-lock.yaml) continue ;;
+  esac
+
+  # secret-looking FILENAMES are blocked outright
+  case "$f" in
+    .env|.env.*|*.pem|*.key|*credentials*|*secret*)
+      echo "BLOCKED: '$f' looks like a secrets file and must not be committed."
+      fail=1
+      continue
+      ;;
+  esac
+
+  staged=$(git show ":$f" 2>/dev/null) || continue
+
+  if printf '%s' "$staged" | grep -nE 'AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|sk-[A-Za-z0-9_-]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY' >/dev/null; then
+    echo "BLOCKED: possible API key or private key in '$f':"
+    printf '%s' "$staged" | grep -nE 'AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|sk-[A-Za-z0-9_-]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY' | head -5
+    fail=1
+  fi
+
+  if printf '%s' "$staged" | grep -nE '\([0-9]{3}\) ?[0-9]{3}-[0-9]{4}|[0-9]{3}[-.][0-9]{3}[-.][0-9]{4}' >/dev/null; then
+    echo "BLOCKED: possible phone number in '$f' (web-safe rule: no phone in this repo):"
+    printf '%s' "$staged" | grep -nE '\([0-9]{3}\) ?[0-9]{3}-[0-9]{4}|[0-9]{3}[-.][0-9]{3}[-.][0-9]{4}' | head -5
+    fail=1
+  fi
+
+  if printf '%s' "$staged" | grep -inE '[a-z0-9._%+-]+@(gmail|outlook|yahoo|icloud|hotmail|proton|protonmail)\.(com|me|ch)' >/dev/null; then
+    echo "BLOCKED: personal email address in '$f' (web-safe rule: no personal email in this repo):"
+    printf '%s' "$staged" | grep -inE '[a-z0-9._%+-]+@(gmail|outlook|yahoo|icloud|hotmail|proton|protonmail)\.(com|me|ch)' | head -5
+    fail=1
+  fi
+done
+
+if [ "$fail" -ne 0 ]; then
+  echo ""
+  echo "Commit stopped by .githooks/pre-commit (the repo's secret/PII guard)."
+  echo "Remove the flagged content and commit again."
+fi
+
+exit $fail

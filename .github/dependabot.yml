@@ -1,0 +1,16 @@
+# Dependabot — GitHub's automatic dependency updater.
+# Every Monday it checks this site's npm packages; if any have security fixes
+# or updates, it opens a pull request on GitHub for Dan to review and merge.
+# Nothing lands on the live site automatically — a PR still needs a merge.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      # bundle routine minor/patch bumps into one PR to reduce noise
+      routine-updates:
+        update-types: ["minor", "patch"]
