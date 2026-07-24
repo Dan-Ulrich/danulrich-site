@@ -1,9 +1,11 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
-import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
   site: "https://danulrich.com",
-  integrations: [mdx(), sitemap(), tailwind()],
+  // Astro 7 changed the default whitespace handling ('jsx'); keep the old
+  // full-minification behavior so rendered spacing stays identical.
+  compressHTML: true,
+  integrations: [mdx(), sitemap()],
 });

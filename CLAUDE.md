@@ -16,9 +16,9 @@ Everything committed here is effectively public. Content source of truth is
   `--no-verify`; if it false-alarms, tune the script instead and log why.
 - **Dependencies:** Dependabot (`.github/dependabot.yml`) opens weekly PRs for
   updates; security PRs get priority. After any dependency change, `npm run build`
-  must pass before committing. Known accepted risk: Astro 5.x bundles an old
-  `sharp` (build-time only, no visitor exposure) — resolved when we do the
-  Astro 5→7 upgrade, which is a Dan-approved migration, not a routine bump.
+  must pass before committing. Stack notes: Astro 7; Tailwind 3 runs through
+  PostCSS (`postcss.config.mjs`) because the old @astrojs/tailwind integration
+  was retired; `.nvmrc` pins Node 22+ for Cloudflare builds — don't remove it.
 - **Deploys:** commits to `main` go live. Content/visual changes Dan hasn't seen
   ship via a branch + Access-locked preview first (see DECISIONS.md 2026-07-06).
   Claude commits locally but does not push to `main` without Dan's go-ahead.
