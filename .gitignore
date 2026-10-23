@@ -20,3 +20,7 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# 2026-10-22 standard: local-only working copies and render proofs
+private/
+_proof/

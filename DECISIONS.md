@@ -2,6 +2,10 @@
 
 _Real decisions only: what we chose, why, and what lost. Newest on top. Claude writes it; Dan reads it. (Started 2026-07-07.)_
 
+_Plain-English journal of real decisions only: "we chose X over Y because Z." Newest on top._
+
+- **2026-10-22 — Adopted the 2026-10-22 Claude Code standard (CLAUDE.md Standards section, SECURITY.md, WIP.md, CHANGES.md, .gitattributes).** Why: the owner directed every repo onto the current standard so none runs on old logic. Rejected: leaving this repo as it was (it predated the standard).
+
 - **2026-08-06 — Blog build-out (this pass) is scaffolding only: nav link, broadened description, 2-3 clearly-marked placeholder posts, no tags/categories, no homepage "recent posts" preview.** Why: theme already ships full working plumbing (listing page, post page, schema) — real content topics are a separate decision Dan hasn't made yet, so this pass proves the pipeline without inventing fake content. Rejected: writing polished placeholder posts (would read as real content) and adding the homepage preview now (theme supports it, but Dan wants homepage untouched for now).
 - **2026-08-06 — Blog is mixed professional/personal, not purely professional.** Why: Dan wants broader range than the resume-site framing; supersedes the original scaffold description ("Notes on program delivery, operations, and AI-enabled work"), which will be broadened in copy.
 - **2026-07-23 — Astro upgraded 5→7 (branch `astro-7-upgrade`); Tailwind stays on v3, now wired through PostCSS.** Why: Dan approved the migration, and it clears the last audit findings (0 vulnerabilities after); the retired @astrojs/tailwind integration was replaced with plain PostCSS wiring so the styling output stays byte-identical — one major change at a time on a live site. Rejected: jumping to Tailwind 4 in the same pass (bigger restyle risk, can be its own project later).

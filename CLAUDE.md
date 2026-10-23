@@ -67,3 +67,13 @@ Consult these guides before working on related tasks:
 - [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+
+## Standards (global CLAUDE.md, 2026-10-22)
+
+This project follows its owner's global Claude Code standards (kept outside this public repo) and does
+not restate them. In short: the Definition of Done (render it, check it by machine, report target vs.
+actual, three-state verdicts, close the loop); the Goal gate (`/goal` with an observable criterion on
+iterative work); the decision journal `DECISIONS.md`; the Airlock (work and personal never mix);
+the lesson ladder (Fail, Investigate, Verify, Distill, then write the rule where it should have caught
+it); and model routing (`opusplan`: Opus plans and judges, Sonnet executes; judge agents pinned
+`model: opus`).
