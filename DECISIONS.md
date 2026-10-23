@@ -1,8 +1,6 @@
 # Decisions — danulrich-site
 
-_Real decisions only: what we chose, why, and what lost. Newest on top. Claude writes it; Dan reads it. (Started 2026-07-07.)_
-
-_Plain-English journal of real decisions only: "we chose X over Y because Z." Newest on top._
+_Plain-English journal of real decisions only: "we chose X over Y because Z." Newest on top. Claude writes it; Dan reads it. (Started 2026-07-07.)_
 
 - **2026-10-22 — Adopted the 2026-10-22 Claude Code standard (CLAUDE.md Standards section, SECURITY.md, WIP.md, CHANGES.md, .gitattributes).** Why: the owner directed every repo onto the current standard so none runs on old logic. Rejected: leaving this repo as it was (it predated the standard).
 

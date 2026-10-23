@@ -13,6 +13,7 @@ Content source of truth is `src/data/resume.json`. Commits to `main` go live (CL
 ## Open loops visible in the files and git history
 - Blog topics: DECISIONS.md (2026-08-06) says real content topics are a separate decision not yet made.
   The `src/content/blog`, `projects` and `work` folders are empty in the current checkout.
-- Unmerged remote branches exist on GitHub (several `dependabot/npm_and_yarn/*` update branches,
-  plus `phase-2-resume` and `frost-family-page`). Whether each is merged or abandoned: NOT CHECKED.
+- Branches on GitHub: `phase-2-resume` and `astro-7-upgrade` are already merged into `main`. Unmerged as of
+  2026-10-22: 19 `dependabot/npm_and_yarn/*` update branches and one unmerged feature branch. Whether each is
+  still wanted or abandoned: NOT CHECKED.
 - Dependabot opens weekly update pull requests; per CLAUDE.md, run `npm run build` after any dependency change.
